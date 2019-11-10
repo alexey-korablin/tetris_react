@@ -10,7 +10,7 @@ import { Stage } from './Stage';
 import { StartButton } from './StartButton';
 
 // Helper
-import { createStage } from '../helpers/gameHelpers';
+import { createStage, checkCollision } from '../helpers/gameHelpers';
 
 // Styled Components
 import {
@@ -20,8 +20,8 @@ import {
 
 export const Tetris = () => {
     const [dropTime, setDropTime] = useState(null);
-    const [gameOver, setgameOver] = useState(false);
-    const [player, updatePlayerPos, resetPlayer] = usePlayer();
+    const [gameOver, setGameOver] = useState(false);
+    const [player, updatePlayerPos, resetPlayer] = usePlayer(); 
     const [stage, setStage] = useStage(player);
 
     console.log('re-render');
@@ -30,16 +30,26 @@ export const Tetris = () => {
     // const resetPlayer = () => {};
 
     const movePlayer = (dir) => {
-        updatePlayerPos({ x: dir, y: 0 })
+        if (!checkCollision(player, stage, { x: dir, y: 0 })) {
+            updatePlayerPos({ x: dir, y: 0 })
+        }
     };
 
     const startGame = () => {
         setStage(createStage());
         resetPlayer();
+        setGameOver(false);
     };
 
     const drop = () => {
-        updatePlayerPos({ x: 0, y: 1, collided: false });
+        if (!checkCollision(player, stage, { x: 0, y: 1 })) {
+            updatePlayerPos({ x: 0, y: 1, collided: false });
+        } else {
+            if (player.pos.y < 1) {
+                setGameOver(true);
+                setDropTime(null)
+            }
+        }
     };
 
     const dropPlayer = () => {
@@ -68,7 +78,7 @@ export const Tetris = () => {
                             <Display text='Score' />
                             <Display text='Rows' />
                             <Display text='Level' />
-                            <StartButton onClick={startGame} />
+                            <StartButton callback={startGame} />
                         </>)
                     }
                 </aside>
