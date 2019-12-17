@@ -25,14 +25,15 @@ export const Tetris = () => {
     const [gameOver, setGameOver] = useState(false);
     const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer(); 
     const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
-    const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(
-        rowsCleared
-    );
-
-    console.log('re-render');
-
-    // const updatePlayerPos = () => {};
-    // const resetPlayer = () => {};
+    const [
+        score,
+        setScore,
+        rows,
+        setRows,
+        level,
+        setLevel,
+        pause,
+        setPause] = useGameStatus(rowsCleared);
 
     const movePlayer = (dir) => {
         if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -48,7 +49,22 @@ export const Tetris = () => {
         setScore(0);
         setRows(0);
         setLevel(0);
+        setPause(null);
     };
+
+    const pauseGame = () => {
+        if (!pause) {
+            setDropTime(null);
+            setPause(true);
+        }
+    }
+
+    const resumeGame = () => { 
+        if (pause) {
+            setDropTime(1000 / (level + 1) + 200); 
+            setPause(false);
+        }
+    }
 
     const drop = () => {
         if (rows > (level + 1) * 10) {
@@ -69,14 +85,12 @@ export const Tetris = () => {
     const keyUp = ({ keyCode }) => {
         if (!gameOver) {
             if ( keyCode === 40 ) {
-                console.log('Interval ON');
                 setDropTime(1000 / (level + 1) + 200);
             }
         }
     }
 
     const dropPlayer = () => {
-        console.log('Interval OFF');
         setDropTime(null);
         drop();
     };
@@ -90,7 +104,11 @@ export const Tetris = () => {
             } else if (keyCode === 40) {
                 dropPlayer();
             } else if (keyCode === 38) {
-                playerRotate(stage, 1); // stage instead of player
+                playerRotate(stage, 1);
+            } else if (keyCode === 80) {
+                pauseGame();
+            } else if (keyCode === 82) {
+                resumeGame();
             }
         }
     }
@@ -104,7 +122,7 @@ export const Tetris = () => {
             onKeyDown={(e) => move(e)}
             onKeyUp={keyUp}>
             <StyledTetris>
-                <Stage stage={stage}/>
+                <Stage stage={stage} pause={pause}/>
                 <aside>
                     {gameOver ? <Display gameOver={gameOver} text='Game Over'/> :
                         (<>

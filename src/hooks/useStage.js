@@ -5,7 +5,6 @@ import { createStage } from '../helpers/gameHelpers'
 export const useStage = (player, resetPlayer) => {
     const [stage, setStage] = useState(createStage());
     const [rowsCleared, setRowsCleared] = useState(0);
-    console.log(player);
 
     useEffect(() => {
         setRowsCleared(0);
@@ -25,7 +24,6 @@ export const useStage = (player, resetPlayer) => {
             const newStage = prevStage.map(row => 
                 row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell)));
             // draw the tetromino
-            console.log(player);
             player.tetromino.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {

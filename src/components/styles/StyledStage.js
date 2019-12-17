@@ -12,4 +12,5 @@ export const StyledStage = styled.div`
     width: 100%;
     max-width: 25vw;
     background: #111;
+    filter: blur(${props => props.pause ? '25px': '0px'}) grayscale(${props => props.pause ? 1: 0});
 `;
