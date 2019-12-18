@@ -19,3 +19,7 @@ export const checkCollision = (player, stage, { x: moveX, y: moveY }) => {
         }
     }
 };
+
+export const getNextPlayerType = (player) => player.tetromino.length > 1 
+    ? player.tetromino.reduce((ack, l) => [...ack, ...l], []).find(t => t !== 0)
+    : '-';

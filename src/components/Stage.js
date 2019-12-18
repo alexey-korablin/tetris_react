@@ -11,7 +11,7 @@ export const Stage = ({ stage, pause }) => (
     <StyledWrapper>
         {pause && <StyledSplash>
             <StyledSplashMessage>paused</StyledSplashMessage>
-            <StyledSplashTips>to resume the game press 'r'</StyledSplashTips>
+            <StyledSplashTips>to resume the game press 'p'</StyledSplashTips>
             </StyledSplash>   } 
         <StyledStage 
             width={stage[0].length} 

@@ -23,7 +23,12 @@ import {
 export const Tetris = () => {
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-    const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer(); 
+    const [
+        player,
+        updatePlayerPos,
+        resetPlayer,
+        playerRotate,
+        nextPlayerType] = usePlayer();
     const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
     const [
         score,
@@ -55,15 +60,10 @@ export const Tetris = () => {
     const pauseGame = () => {
         if (!pause) {
             setDropTime(null);
-            setPause(true);
-        }
-    }
-
-    const resumeGame = () => { 
-        if (pause) {
+        } else {
             setDropTime(1000 / (level + 1) + 200); 
-            setPause(false);
         }
+        setPause(prev => !prev);
     }
 
     const drop = () => {
@@ -107,8 +107,6 @@ export const Tetris = () => {
                 playerRotate(stage, 1);
             } else if (keyCode === 80) {
                 pauseGame();
-            } else if (keyCode === 82) {
-                resumeGame();
             }
         }
     }
@@ -124,14 +122,14 @@ export const Tetris = () => {
             <StyledTetris>
                 <Stage stage={stage} pause={pause}/>
                 <aside>
-                    {gameOver ? <Display gameOver={gameOver} text='Game Over'/> :
-                        (<>
-                            <Display text={`Score: ${score}`} />
-                            <Display text={`Rows: ${rows}`} />
-                            <Display text={`Level: ${level}`} />
-                            <StartButton callback={startGame} />
-                        </>)
-                    }
+                <>
+                    {gameOver && <Display gameOver={gameOver} text='Game Over'/>}
+                    <Display text={`Score: ${score}`} />
+                    <Display text={`Rows: ${rows}`} />
+                    <Display text={`Level: ${level}`} />
+                    <Display text={`Next Brick Type: ${nextPlayerType}`} />
+                    <StartButton callback={startGame} gameOver={gameOver}/>
+                </>
                 </aside>
             </StyledTetris>
         </StyledTetrisWrapper>

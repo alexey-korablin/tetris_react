@@ -1,7 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 import { TETROMINOS, randomTetromino } from '../tetrominos';
-import { STAGE_WIDTH, checkCollision } from '../helpers/gameHelpers';
+import { 
+    STAGE_WIDTH,
+    checkCollision,
+    getNextPlayerType } from '../helpers/gameHelpers';
 
 export const usePlayer = () => {
     const [player, setPlayer] = useState({
@@ -9,6 +12,16 @@ export const usePlayer = () => {
         tetromino: TETROMINOS[0].shape,
         collided: false
     });
+
+    const [nextPlayer, setNextPlayer] = useState({
+        pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
+        tetromino: randomTetromino().shape,
+        collided: false
+    });
+
+    const nextPlayerType = useMemo(
+        () => getNextPlayerType(nextPlayer), [nextPlayer]
+    );
 
     const updatePlayerPos = ({ x, y, collided }) => {
         setPlayer(prev => ({ 
@@ -28,7 +41,7 @@ export const usePlayer = () => {
         return rotatedTetro.reverse();
     };
 
-    const playerRotate = (stage, dir) => {  // stage instead player
+    const playerRotate = (stage, dir) => {
         const clonedPlayer = JSON.parse(JSON.stringify(player));
         clonedPlayer.tetromino = rotate(clonedPlayer.tetromino, dir);
 
@@ -47,12 +60,19 @@ export const usePlayer = () => {
     };
 
     const resetPlayer = useCallback(() => {
-        setPlayer({
+        setPlayer(nextPlayer);
+        setNextPlayer({
             pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
             tetromino: randomTetromino().shape,
             collided: false
-        })
-    }, []);
+        });
+    }, [nextPlayer]);
 
-    return [player, updatePlayerPos, resetPlayer, playerRotate];
+    return [
+        player,
+        updatePlayerPos,
+        resetPlayer,
+        playerRotate,
+        nextPlayerType
+    ];
 }
