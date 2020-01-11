@@ -95,7 +95,8 @@ export const Tetris = () => {
         drop();
     };
 
-    const move = ({ keyCode }) => {
+    const handleKeyDown = ({ keyCode }) => {
+        console.log(keyCode);
         if (!gameOver) {
             if (keyCode === 37 ) {
                 movePlayer(-1);
@@ -107,7 +108,13 @@ export const Tetris = () => {
                 playerRotate(stage, 1);
             } else if (keyCode === 80) {
                 pauseGame();
+            } else if (keyCode === 70) {
+                setGameOver(true);
+                setDropTime(null);
             }
+        } 
+        if (keyCode === 83) {
+            startGame();
         }
     }
 
@@ -117,7 +124,7 @@ export const Tetris = () => {
         <StyledTetrisWrapper 
             role="button" 
             tabIndex="0" 
-            onKeyDown={(e) => move(e)}
+            onKeyDown={(e) => handleKeyDown(e)}
             onKeyUp={keyUp}>
             <StyledTetris>
                 <Stage stage={stage} pause={pause}/>
