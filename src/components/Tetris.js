@@ -5,6 +5,7 @@ import { usePlayer } from '../hooks/usePlayer';
 import { useStage } from '../hooks/useStage';
 import { useInterval } from '../hooks/useInterval';
 import { useGameStatus } from '../hooks/useGameStatus';
+import { useGameStatistics } from '../hooks/useGameStatistics';
 
 // Components
 import { Display } from './Display';
@@ -13,6 +14,7 @@ import { StartButton } from './StartButton';
 
 // Helper
 import { createStage, checkCollision } from '../helpers/gameHelpers';
+import { getStatisticText } from '../helpers/gameHelpers';
 
 // Styled Components
 import {
@@ -28,7 +30,8 @@ export const Tetris = () => {
         updatePlayerPos,
         resetPlayer,
         playerRotate,
-        nextPlayerType] = usePlayer();
+        nextPlayerType,
+        playerType] = usePlayer();
     const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
     const [
         score,
@@ -39,6 +42,7 @@ export const Tetris = () => {
         setLevel,
         pause,
         setPause] = useGameStatus(rowsCleared);
+    const [stats, resetStats] = useGameStatistics(player, playerType);
 
     const movePlayer = (dir) => {
         if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -48,6 +52,7 @@ export const Tetris = () => {
 
     const startGame = () => {
         setStage(createStage());
+        resetStats();
         setDropTime(1000);
         resetPlayer();
         setGameOver(false);
@@ -96,7 +101,6 @@ export const Tetris = () => {
     };
 
     const handleKeyDown = ({ keyCode }) => {
-        console.log(keyCode);
         if (!gameOver) {
             if (keyCode === 37 ) {
                 movePlayer(-1);
@@ -134,7 +138,8 @@ export const Tetris = () => {
                     <Display text={`Score: ${score}`} />
                     <Display text={`Rows: ${rows}`} />
                     <Display text={`Level: ${level}`} />
-                    <Display text={`Next Brick Type: ${nextPlayerType}`} />
+                    <Display text={`Next Brick: ${nextPlayerType}`} />
+                    <Display text={getStatisticText(stats)} data={stats}/>
                     <StartButton callback={startGame} gameOver={gameOver}/>
                 </>
                 </aside>

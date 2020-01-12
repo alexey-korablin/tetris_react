@@ -4,23 +4,30 @@ import { TETROMINOS, randomTetromino } from '../tetrominos';
 import { 
     STAGE_WIDTH,
     checkCollision,
-    getNextPlayerType } from '../helpers/gameHelpers';
+    getPlayerType
+} from '../helpers/gameHelpers';
 
 export const usePlayer = () => {
     const [player, setPlayer] = useState({
         pos: { x: 0, y: 0 },
         tetromino: TETROMINOS[0].shape,
-        collided: false
+        collided: false,
+        id: Math.floor(Math.random() * 10000000),
     });
 
     const [nextPlayer, setNextPlayer] = useState({
         pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
         tetromino: randomTetromino().shape,
-        collided: false
+        collided: false,
+        id: Math.floor(Math.random() * 10000000),
     });
 
     const nextPlayerType = useMemo(
-        () => getNextPlayerType(nextPlayer), [nextPlayer]
+        () => getPlayerType(nextPlayer), [nextPlayer]
+    );
+
+    const playerType = useMemo(
+        () => getPlayerType(player), [player]
     );
 
     const updatePlayerPos = ({ x, y, collided }) => {
@@ -64,7 +71,8 @@ export const usePlayer = () => {
         setNextPlayer({
             pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
             tetromino: randomTetromino().shape,
-            collided: false
+            collided: false,
+            id: Math.floor(Math.random() * 10000000),
         });
     }, [nextPlayer]);
 
@@ -73,6 +81,7 @@ export const usePlayer = () => {
         updatePlayerPos,
         resetPlayer,
         playerRotate,
-        nextPlayerType
+        nextPlayerType,
+        playerType
     ];
 }

@@ -1,5 +1,14 @@
 export const STAGE_WIDTH = 12;
 export const STAGE_HEIGHT = 20;
+export const DEFAULT_STAT = {
+    'I': 0,
+    'Z': 0,
+    'T': 0,
+    'S': 0,
+    'O': 0,
+    'L': 0,
+    'J': 0,
+};
 
 export const createStage = () => 
     Array.from(Array(STAGE_HEIGHT), () => 
@@ -20,6 +29,10 @@ export const checkCollision = (player, stage, { x: moveX, y: moveY }) => {
     }
 };
 
-export const getNextPlayerType = (player) => player.tetromino.length > 1 
-    ? player.tetromino.reduce((ack, l) => [...ack, ...l], []).find(t => t !== 0)
-    : '-';
+export const getPlayerType = (player) => player.tetromino.length > 1 
+? player.tetromino.reduce((ack, l) => [...ack, ...l], []).find(t => t !== 0)
+: '-';
+
+export const getStatisticText = (stat) => {
+    return Object.keys(stat).reduce((ack, k) => ack + `${k}: ${stat[k]}, `, '');
+}
